@@ -28,6 +28,7 @@ import java.util.EventListener;
 public class Home extends AppCompatActivity implements EventListener {
 
     private String requestEndpoint = "https://api.darksky.net/forecast/";
+    private String requestExclusions = "exclude=minutely,daily,alerts,flags";
 
     public void LocationFound(Location currentLocation){
         int forecast = getForecast(currentLocation);
@@ -74,7 +75,7 @@ public class Home extends AppCompatActivity implements EventListener {
     private int getForecast(Location currentLocation) {
 
         String secretKey = getForecastSecretKey();
-        String httpRequest = requestEndpoint + secretKey + "/" + currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+        String httpRequest = requestEndpoint + secretKey + "/" + currentLocation.getLatitude() + "," + currentLocation.getLongitude() + "?" +  requestExclusions;
 
         int result = 0;
 
