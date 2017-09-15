@@ -1,10 +1,7 @@
 package coatapp.coat;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
@@ -17,9 +14,11 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -84,6 +83,11 @@ public class Home extends AppCompatActivity implements EventListener {
             AsyncTask<String, Void, String> getForecastTask = job.execute(httpRequest);
             String getForecastResponse = getForecastTask.get();
             //TODO: Deserialise JSON object here.
+
+            JSONObject obj = JsonHelper.Parse(getForecastResponse);
+
+            figureOutCoat(obj);
+
             result = 1;
 
         } catch (Exception e) {
@@ -91,6 +95,43 @@ public class Home extends AppCompatActivity implements EventListener {
         }
 
         return result;
+    }
+
+    private void figureOutCoat(JSONObject obj) {
+
+        boolean wearACoat = false;
+
+        try{
+            JSONArray currentWeatherObject = obj.getJSONArray("currently");
+            JSONObject currently = currentWeatherObject.getJSONObject(0);
+            String currentWeatherIcon = currently.getString("icon");
+
+            if (currentWeatherIcon == "rain"){
+                wearACoat = true;
+            }
+
+            JSONArray hourlyWeatherObject = obj.getJSONArray("hourly");
+            JSONObject hourly = hourlyWeatherObject.getJSONObject(0);
+            JSONArray hourlyDataWeatherObject = hourly.getJSONArray("data");
+
+            for(int i =0; i<5; i++){
+                JSONObject hourlyOneData = hourlyDataWeatherObject.getJSONObject(i);
+                String hourlyOneWeatherIcon = hourlyOneData.getString("icon");
+
+                if (currentWeatherIcon == "rain"){
+                    wearACoat = true;
+                }
+            }
+
+            updateView(wearACoat);
+        }
+        catch (JSONException e){
+
+        }
+    }
+
+    private void updateView(boolean wearACoat) {
+
     }
 
     private String getForecastSecretKey(){
