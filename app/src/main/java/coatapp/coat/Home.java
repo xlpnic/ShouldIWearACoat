@@ -18,10 +18,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.EventListener;
 
 public class Home extends AppCompatActivity implements EventListener {
@@ -30,8 +26,11 @@ public class Home extends AppCompatActivity implements EventListener {
     private String requestExclusions = "exclude=minutely,daily,alerts,flags";
 
     public void LocationFound(Location currentLocation){
-        int forecast = getForecast(currentLocation);
-        setCoatResult(forecast, currentLocation);
+        JSONObject forecast = getForecast(currentLocation);
+
+        boolean coatWeather = isItCoatWeather(forecast);
+
+        setCoatResult(coatWeather, currentLocation);
     }
 
     private FusedLocationProviderClient mFusedLocationClient;
@@ -41,7 +40,6 @@ public class Home extends AppCompatActivity implements EventListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
@@ -49,89 +47,76 @@ public class Home extends AppCompatActivity implements EventListener {
         determineLocation();
     }
 
-    private void setCoatResult(int forecast, Location currentLocation) {
-        TextView textResult = (TextView) findViewById(R.id.textResult);
-        textResult.setText("No idea yet, mate!");
+    private void setCoatResult(boolean wearCoat, Location currentLocation) {
+
+        if(wearCoat){
+            TextView textResult = (TextView) findViewById(R.id.textResult);
+            textResult.setText("Yep!");
+        }
+        else{
+            TextView textResult = (TextView) findViewById(R.id.textResult);
+            textResult.setText("Nah, you'll be fine!");
+        }
 
         TextView textLocation = (TextView) findViewById(R.id.textLocation);
         textLocation.setText(currentLocation.getLatitude() + ", " + currentLocation.getLongitude());
     }
 
-    public static String getForecastRequest(String urlToRead) throws Exception {
-        StringBuilder result = new StringBuilder();
-        URL url = new URL(urlToRead);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String line;
-        while ((line = rd.readLine()) != null) {
-            result.append(line);
-        }
-        rd.close();
-        return result.toString();
-    }
-
-    private int getForecast(Location currentLocation) {
+    private JSONObject getForecast(Location currentLocation) {
 
         String secretKey = getForecastSecretKey();
         String httpRequest = requestEndpoint + secretKey + "/" + currentLocation.getLatitude() + "," + currentLocation.getLongitude() + "?" +  requestExclusions;
 
-        int result = 0;
+        JSONObject forecast = null;
 
         try {
-            GetForecastJob job = new GetForecastJob();
-            AsyncTask<String, Void, String> getForecastTask = job.execute(httpRequest);
-            String getForecastResponse = getForecastTask.get();
-            //TODO: Deserialise JSON object here.
+            ForecastRequestTask forecastRequestTask = new ForecastRequestTask();
+            AsyncTask<String, Void, String> forecastResponse = forecastRequestTask.execute(httpRequest);
+            String getForecastResponse = forecastResponse.get();
 
-            JSONObject obj = JsonHelper.Parse(getForecastResponse);
-
-            figureOutCoat(obj);
-
-            result = 1;
+            forecast = new JSONObject(getForecastResponse);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return result;
+        return forecast;
     }
 
-    private void figureOutCoat(JSONObject obj) {
+    private boolean isItCoatWeather(JSONObject obj) {
 
         boolean wearACoat = false;
 
         try{
-            JSONArray currentWeatherObject = obj.getJSONArray("currently");
-            JSONObject currently = currentWeatherObject.getJSONObject(0);
+            JSONObject currently = obj.getJSONObject("currently");
             String currentWeatherIcon = currently.getString("icon");
 
-            if (currentWeatherIcon == "rain"){
+            if (currentWeatherIcon.equals("rain")){
                 wearACoat = true;
             }
+            else{
 
-            JSONArray hourlyWeatherObject = obj.getJSONArray("hourly");
-            JSONObject hourly = hourlyWeatherObject.getJSONObject(0);
-            JSONArray hourlyDataWeatherObject = hourly.getJSONArray("data");
+                JSONObject hourlyWeatherBreakdown = obj.getJSONObject("hourly");
+                JSONArray hourlyWeatherData = hourlyWeatherBreakdown.getJSONArray("data");
 
-            for(int i =0; i<5; i++){
-                JSONObject hourlyOneData = hourlyDataWeatherObject.getJSONObject(i);
-                String hourlyOneWeatherIcon = hourlyOneData.getString("icon");
+                int numHoursInFutureToCheck = 5;
 
-                if (currentWeatherIcon == "rain"){
-                    wearACoat = true;
+                for(int i =0; i<numHoursInFutureToCheck; i++){
+                    JSONObject oneHourWeatherData = hourlyWeatherData.getJSONObject(i);
+                    String hourWeatherIcon = oneHourWeatherData.getString("icon");
+
+                    if (hourWeatherIcon.equals("rain")){
+                        wearACoat = true;
+                        break;
+                    }
                 }
             }
-
-            updateView(wearACoat);
         }
         catch (JSONException e){
 
         }
-    }
 
-    private void updateView(boolean wearACoat) {
-
+        return wearACoat;
     }
 
     private String getForecastSecretKey(){
