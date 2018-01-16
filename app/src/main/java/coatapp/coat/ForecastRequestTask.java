@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class GetForecastJob extends AsyncTask<String, Void, String> {
+public class ForecastRequestTask extends AsyncTask<String, Void, String> {
 
     public String result;
 
