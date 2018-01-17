@@ -9,9 +9,7 @@ import java.net.URL;
 
 public class ForecastRequestTask extends AsyncTask<String, Void, String> {
 
-    public String result;
-
-    public static String getForecastRequest(String urlToRead) throws Exception {
+    private static String getForecastRequest(String urlToRead) throws Exception {
         StringBuilder result = new StringBuilder();
         URL url = new URL(urlToRead);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -32,8 +30,7 @@ public class ForecastRequestTask extends AsyncTask<String, Void, String> {
         String forecastRequestResponse = "";
 
         try {
-            forecastRequestResponse = getForecastRequest(params[0].toString());
-            result = forecastRequestResponse;
+            forecastRequestResponse = getForecastRequest(params[0]);
         } catch (Exception e) {
             e.printStackTrace();
         }
