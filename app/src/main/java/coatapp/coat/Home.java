@@ -1,9 +1,11 @@
 package coatapp.coat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,8 +16,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.EventListener;
@@ -83,40 +83,46 @@ public class Home extends AppCompatActivity implements EventListener {
         return forecast;
     }
 
-    private boolean isItCoatWeather(JSONObject obj) {
+    private boolean isItCoatWeather(JSONObject weatherForecast) {
 
         boolean wearACoat = false;
 
-        try{
-            JSONObject currently = obj.getJSONObject("currently");
-            String currentWeatherIcon = currently.getString("icon");
+        WeatherConverter.WeatherType weatherType = JsonHelper.GetCurrentWeatherType(weatherForecast);
 
-            if (currentWeatherIcon.equals("rain")){
-                wearACoat = true;
-            }
-            else{
+        if (IsCoatWeatherType(weatherType)){
+            wearACoat = true;
+        }
+        else{
 
-                JSONObject hourlyWeatherBreakdown = obj.getJSONObject("hourly");
-                JSONArray hourlyWeatherData = hourlyWeatherBreakdown.getJSONArray("data");
+            int numHoursInFutureToCheck = 5;
 
-                int numHoursInFutureToCheck = 5;
+            WeatherConverter.WeatherType[] hourlyWeatherBreakdown = JsonHelper.GetWeatherTypeByHour(weatherForecast, numHoursInFutureToCheck);
 
-                for(int i =0; i<numHoursInFutureToCheck; i++){
-                    JSONObject oneHourWeatherData = hourlyWeatherData.getJSONObject(i);
-                    String hourWeatherIcon = oneHourWeatherData.getString("icon");
-
-                    if (hourWeatherIcon.equals("rain")){
-                        wearACoat = true;
-                        break;
-                    }
+            for (WeatherConverter.WeatherType hourWeatherType : hourlyWeatherBreakdown) {
+                if (IsCoatWeatherType(hourWeatherType)){
+                    wearACoat = true;
+                    break;
                 }
             }
         }
-        catch (JSONException e){
-
-        }
 
         return wearACoat;
+    }
+
+    private boolean IsCoatWeatherType(WeatherConverter.WeatherType weatherType){
+        switch (weatherType){
+            case rain:
+            case hail:
+            case sleet:
+            case snow:
+            case thunderstorm:
+            case tornado:
+            case wind:
+            case otherWeather:
+                return true;
+            default:
+                return false;
+        }
     }
 
     private String getForecastSecretKey(){
@@ -133,30 +139,57 @@ public class Home extends AppCompatActivity implements EventListener {
         return secretKey;
     }
 
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case ACCESS_LOCATION_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay!
+
+                    mFusedLocationClient.getLastLocation()
+                            .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location locationResult) {
+                                    // Got last known location. In some rare situations this can be null.
+                                    if (locationResult != null) {
+                                        LocationFound(locationResult);
+                                    }
+                                }
+                            });
+                }
+            }
+        }
+    }
+
+    final int ACCESS_LOCATION_REQUEST = 55555;
+
     private void determineLocation(){
         int fineLocationPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         int coarseLocationPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
 
         if (fineLocationPermission != PackageManager.PERMISSION_GRANTED && coarseLocationPermission != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            //return null;
-        }
 
-        mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location locationResult) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (locationResult != null) {
-                            LocationFound(locationResult);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    ACCESS_LOCATION_REQUEST);
+        }
+        else{
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location locationResult) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (locationResult != null) {
+                                LocationFound(locationResult);
+                            }
                         }
-                    }
-                });
+                    });
+        }
     }
 }
