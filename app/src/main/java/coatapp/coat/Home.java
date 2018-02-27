@@ -32,7 +32,7 @@ public class Home extends AppCompatActivity implements EventListener {
         Button coatCheckButton = (Button) findViewById(R.id.coatCheckButton);
         coatCheckButton.setEnabled(false);
 
-        boolean coatWeather = isItCoatWeather(forecast);
+        boolean coatWeather = ShouldWearACoat(forecast);
 
         setCoatResult(coatWeather, currentLocation);
     }
@@ -78,7 +78,8 @@ public class Home extends AppCompatActivity implements EventListener {
         setResultTextVisible(true);
 
         TextView textLocation = (TextView) findViewById(R.id.textLocation);
-        textLocation.setText(currentLocation.getLatitude() + ", " + currentLocation.getLongitude());
+        String locationText = currentLocation.getLatitude() + ", " + currentLocation.getLongitude();
+        textLocation.setText(locationText);
         textLocation.setVisibility(View.VISIBLE);
     }
 
@@ -103,30 +104,48 @@ public class Home extends AppCompatActivity implements EventListener {
         return forecast;
     }
 
-    private boolean isItCoatWeather(JSONObject weatherForecast) {
+    private boolean ShouldWearACoat(JSONObject weatherForecast) {
+
+        WeatherConverter.WeatherType currentWeatherType = JsonHelper.GetCurrentWeatherType(weatherForecast);
+
+        //TODO: Get temperatures from response
+
+        double currentTemperature = 0.0;
+
+        boolean currentlyCoatWeather = IsItCoatWeather(currentWeatherType, currentTemperature);
+
+        if (currentlyCoatWeather){
+            return true;
+        }
+
+        int numHoursInFutureToCheck = 5;
+
+        WeatherConverter.WeatherType[] hourlyWeatherBreakdown = JsonHelper.GetWeatherTypeByHour(weatherForecast, numHoursInFutureToCheck);
 
         boolean wearACoat = false;
 
-        WeatherConverter.WeatherType weatherType = JsonHelper.GetCurrentWeatherType(weatherForecast);
-
-        if (IsCoatWeatherType(weatherType)){
-            wearACoat = true;
-        }
-        else{
-
-            int numHoursInFutureToCheck = 5;
-
-            WeatherConverter.WeatherType[] hourlyWeatherBreakdown = JsonHelper.GetWeatherTypeByHour(weatherForecast, numHoursInFutureToCheck);
-
-            for (WeatherConverter.WeatherType hourWeatherType : hourlyWeatherBreakdown) {
-                if (IsCoatWeatherType(hourWeatherType)){
-                    wearACoat = true;
-                    break;
-                }
+        for (WeatherConverter.WeatherType hourWeatherType : hourlyWeatherBreakdown) {
+            double hourTemperature = 0.0;
+            if (IsItCoatWeather(hourWeatherType, hourTemperature)){
+                wearACoat = true;
+                break;
             }
         }
 
         return wearACoat;
+    }
+
+    private boolean IsItCoatWeather(WeatherConverter.WeatherType weatherType, double temperature) {
+
+        return IsCoatWeatherType(weatherType) || IsPrettyCold(temperature);
+
+    }
+
+    private boolean IsPrettyCold(double temperature){
+        double coldestNonCoatTemperature = 60.0;
+
+        return temperature < coldestNonCoatTemperature;
+
     }
 
     private boolean IsCoatWeatherType(WeatherConverter.WeatherType weatherType){
