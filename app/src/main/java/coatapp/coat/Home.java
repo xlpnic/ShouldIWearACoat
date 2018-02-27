@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -28,6 +29,9 @@ public class Home extends AppCompatActivity implements EventListener {
     public void LocationFound(Location currentLocation){
         JSONObject forecast = getForecast(currentLocation);
 
+        Button coatCheckButton = (Button) findViewById(R.id.coatCheckButton);
+        coatCheckButton.setEnabled(false);
+
         boolean coatWeather = isItCoatWeather(forecast);
 
         setCoatResult(coatWeather, currentLocation);
@@ -41,10 +45,23 @@ public class Home extends AppCompatActivity implements EventListener {
         setContentView(R.layout.activity_home);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        setResultTextVisible(false);
     }
 
     public void coatCheck(View view) {
         determineLocation();
+    }
+
+    public void setResultTextVisible(Boolean visible){
+        TextView textResult = (TextView) findViewById(R.id.textResult);
+
+        if(visible){
+            textResult.setVisibility(View.VISIBLE);
+        }
+        else{
+            textResult.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void setCoatResult(boolean wearCoat, Location currentLocation) {
@@ -58,8 +75,11 @@ public class Home extends AppCompatActivity implements EventListener {
             textResult.setText("Nah, you'll be fine!");
         }
 
+        setResultTextVisible(true);
+
         TextView textLocation = (TextView) findViewById(R.id.textLocation);
         textLocation.setText(currentLocation.getLatitude() + ", " + currentLocation.getLongitude());
+        textLocation.setVisibility(View.VISIBLE);
     }
 
     private JSONObject getForecast(Location currentLocation) {
