@@ -15,6 +15,7 @@
         android:background="@drawable/rounded_corners"
         android:onClick="coatCheck"
         android:text="Well?"
+        android:clickable="false"
         android:textAlignment="center"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -23,14 +23,10 @@ import java.util.EventListener;
 
 public class Home extends AppCompatActivity implements EventListener {
 
-    private String requestEndpoint = "https://api.darksky.net/forecast/";
-    private String requestExclusions = "exclude=minutely,daily,alerts,flags";
-
     public void LocationFound(Location currentLocation){
         JSONObject forecast = getForecast(currentLocation);
 
-        Button coatCheckButton = (Button) findViewById(R.id.coatCheckButton);
-        coatCheckButton.setEnabled(false);
+        setCostCheckButtonEnabled(false);
 
         boolean coatWeather = ShouldWearACoat(forecast);
 
@@ -47,13 +43,19 @@ public class Home extends AppCompatActivity implements EventListener {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         setResultTextVisible(false);
+        setCostCheckButtonEnabled(true);
+    }
+
+    public void setCostCheckButtonEnabled(boolean enabled){
+        Button coatCheckButton = (Button) findViewById(R.id.coatCheckButton);
+        coatCheckButton.setEnabled(enabled);
     }
 
     public void coatCheck(View view) {
         determineLocation();
     }
 
-    public void setResultTextVisible(Boolean visible){
+    public void setResultTextVisible(boolean visible){
         TextView textResult = (TextView) findViewById(R.id.textResult);
 
         if(visible){
@@ -68,11 +70,11 @@ public class Home extends AppCompatActivity implements EventListener {
 
         if(wearCoat){
             TextView textResult = (TextView) findViewById(R.id.textResult);
-            textResult.setText("Yep!");
+            textResult.setText(R.string.affirmativeResult);
         }
         else{
             TextView textResult = (TextView) findViewById(R.id.textResult);
-            textResult.setText("Nah, you'll be fine!");
+            textResult.setText(R.string.negativeResult);
         }
 
         setResultTextVisible(true);
@@ -86,7 +88,9 @@ public class Home extends AppCompatActivity implements EventListener {
     private JSONObject getForecast(Location currentLocation) {
 
         String secretKey = getForecastSecretKey();
-        String httpRequest = requestEndpoint + secretKey + "/" + currentLocation.getLatitude() + "," + currentLocation.getLongitude() + "?" +  requestExclusions;
+        String requestEndpoint = "https://api.darksky.net/forecast/";
+        String requestExclusions = "exclude=minutely,daily,alerts,flags";
+        String httpRequest = requestEndpoint + secretKey + "/" + currentLocation.getLatitude() + "," + currentLocation.getLongitude() + "?" + requestExclusions;
 
         JSONObject forecast = null;
 

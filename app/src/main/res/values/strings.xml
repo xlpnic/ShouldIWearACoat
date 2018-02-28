@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Coat</string>
+    <string name="affirmativeResult">Yep!</string>
+    <string name="negativeResult">Nah, you\'ll be fine!</string>
 </resources>
