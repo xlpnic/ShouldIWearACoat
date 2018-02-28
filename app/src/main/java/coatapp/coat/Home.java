@@ -26,8 +26,6 @@ public class Home extends AppCompatActivity implements EventListener {
     public void LocationFound(Location currentLocation){
         JSONObject forecast = getForecast(currentLocation);
 
-        setCostCheckButtonEnabled(false);
-
         boolean coatWeather = ShouldWearACoat(forecast);
 
         setCoatResult(coatWeather, currentLocation);
@@ -52,6 +50,7 @@ public class Home extends AppCompatActivity implements EventListener {
     }
 
     public void coatCheck(View view) {
+        setCostCheckButtonEnabled(false);
         determineLocation();
     }
 
