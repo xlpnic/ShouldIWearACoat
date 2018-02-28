@@ -14,7 +14,7 @@
         android:layout_height="67dp"
         android:background="@drawable/rounded_corners"
         android:onClick="coatCheck"
-        android:text="Well?"
+        android:text="@string/coatCheckButtonText"
         android:clickable="false"
         android:textAlignment="center"
         android:textSize="18sp"
@@ -29,7 +29,6 @@
         android:layout_width="wrap_content"
         android:layout_height="43dp"
         android:background="@drawable/rounded_corners_inverted"
-        android:cursorVisible="false"
         android:ems="10"
         android:gravity="center"
         android:inputType="none"
@@ -51,7 +50,6 @@
         android:layout_height="30dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="161dp"
-        android:cursorVisible="false"
         android:ems="10"
         android:inputType="none"
         android:textAlignment="center"
@@ -62,14 +60,15 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/coatCheckButton"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="SmallSp" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="267dp"
         android:layout_height="80dp"
         android:layout_marginTop="52dp"
-        android:text="SHOULD I WEAR A COAT?"
+        android:text="@string/titleText"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="@color/schemeLightTurquoise"

@@ -111,10 +111,7 @@ public class Home extends AppCompatActivity implements EventListener {
     private boolean ShouldWearACoat(JSONObject weatherForecast) {
 
         WeatherConverter.WeatherType currentWeatherType = JsonHelper.GetCurrentWeatherType(weatherForecast);
-
-        //TODO: Get temperatures from response
-
-        double currentTemperature = 0.0;
+        double currentTemperature = JsonHelper.GetCurrentTemperature(weatherForecast);
 
         boolean currentlyCoatWeather = IsItCoatWeather(currentWeatherType, currentTemperature);
 
@@ -124,13 +121,12 @@ public class Home extends AppCompatActivity implements EventListener {
 
         int numHoursInFutureToCheck = 5;
 
-        WeatherConverter.WeatherType[] hourlyWeatherBreakdown = JsonHelper.GetWeatherTypeByHour(weatherForecast, numHoursInFutureToCheck);
+        HourWeather[] hourlyWeatherBreakdown = JsonHelper.GetWeatherByHour(weatherForecast, numHoursInFutureToCheck);
 
         boolean wearACoat = false;
 
-        for (WeatherConverter.WeatherType hourWeatherType : hourlyWeatherBreakdown) {
-            double hourTemperature = 0.0;
-            if (IsItCoatWeather(hourWeatherType, hourTemperature)){
+        for (HourWeather hourWeather : hourlyWeatherBreakdown) {
+            if (IsItCoatWeather(hourWeather.weatherType, hourWeather.temperature)){
                 wearACoat = true;
                 break;
             }

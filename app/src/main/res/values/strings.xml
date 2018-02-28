@@ -2,4 +2,6 @@
     <string name="app_name">Coat</string>
     <string name="affirmativeResult">Yep!</string>
     <string name="negativeResult">Nah, you\'ll be fine!</string>
+    <string name="coatCheckButtonText">Well?</string>
+    <string name="titleText">SHOULD I WEAR A COAT?</string>
 </resources>

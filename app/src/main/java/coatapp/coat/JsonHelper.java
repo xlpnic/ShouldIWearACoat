@@ -24,9 +24,9 @@ final class JsonHelper {
         return weatherType;
     }
 
-    static WeatherConverter.WeatherType[] GetWeatherTypeByHour(JSONObject weatherForecast, int numHoursInFutureToCheck){
+    static HourWeather[] GetWeatherByHour(JSONObject weatherForecast, int numHoursInFutureToCheck){
 
-        WeatherConverter.WeatherType[] hourlyBreakdown = new WeatherConverter.WeatherType[numHoursInFutureToCheck];
+        HourWeather[] hourlyBreakdown = new HourWeather[numHoursInFutureToCheck];
 
         try{
             JSONObject hourlyWeatherBreakdown = weatherForecast.getJSONObject("hourly");
@@ -35,10 +35,15 @@ final class JsonHelper {
             for(int i =0; i<numHoursInFutureToCheck; i++){
                 JSONObject oneHourWeatherData = hourlyWeatherData.getJSONObject(i);
                 String hourWeatherIcon = oneHourWeatherData.getString("icon");
+                double hourTemperature = oneHourWeatherData.getDouble("apparentTemperature");
 
                 WeatherConverter.WeatherType hourWeatherType = WeatherConverter.GetWeatherType(hourWeatherIcon);
 
-                hourlyBreakdown[i] = hourWeatherType;
+                HourWeather hourWeather = new HourWeather();
+                hourWeather.weatherType = hourWeatherType;
+                hourWeather.temperature = hourTemperature;
+
+                hourlyBreakdown[i] = hourWeather;
             }
         }
         catch(JSONException e){
@@ -46,5 +51,20 @@ final class JsonHelper {
         }
 
         return hourlyBreakdown;
+    }
+
+    static double GetCurrentTemperature(JSONObject weatherForecast) {
+
+        double temperature = 0.0;
+
+        try{
+            JSONObject currently = weatherForecast.getJSONObject("currently");
+            temperature = currently.getDouble("apparentTemperature");
+        }
+        catch(JSONException e){
+            e.printStackTrace();
+        }
+
+        return temperature;
     }
 }
