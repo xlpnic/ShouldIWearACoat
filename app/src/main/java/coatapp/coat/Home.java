@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -17,18 +16,19 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.EventListener;
 
-public class Home extends AppCompatActivity implements EventListener {
+public class Home extends AppCompatActivity implements EventListener, ForecastRequestProcessListener {
+
+    private Location locationProvided;
 
     public void LocationFound(Location currentLocation){
-        JSONObject forecast = getForecast(currentLocation);
 
-        boolean coatWeather = ShouldWearACoat(forecast);
-
-        setCoatResult(coatWeather, currentLocation);
+        locationProvided = currentLocation;
+        getForecast();
     }
 
     private FusedLocationProviderClient mFusedLocationClient;
@@ -84,27 +84,23 @@ public class Home extends AppCompatActivity implements EventListener {
         textLocation.setVisibility(View.VISIBLE);
     }
 
-    private JSONObject getForecast(Location currentLocation) {
+    private void getForecast() {
 
         String secretKey = getForecastSecretKey();
         String requestEndpoint = "https://api.darksky.net/forecast/";
         String requestExclusions = "exclude=minutely,daily,alerts,flags";
-        String httpRequest = requestEndpoint + secretKey + "/" + currentLocation.getLatitude() + "," + currentLocation.getLongitude() + "?" + requestExclusions;
-
-        JSONObject forecast = null;
+        String httpRequest = requestEndpoint + secretKey + "/" + locationProvided.getLatitude() + "," + locationProvided.getLongitude() + "?" + requestExclusions;
 
         try {
-            ForecastRequestTask forecastRequestTask = new ForecastRequestTask();
-            AsyncTask<String, Void, String> forecastResponse = forecastRequestTask.execute(httpRequest);
-            String getForecastResponse = forecastResponse.get();
 
-            forecast = new JSONObject(getForecastResponse);
+            ForecastRequestTask forecastRequestTask = new ForecastRequestTask();
+            forecastRequestTask.setForecastProcesslistener(this);
+
+            forecastRequestTask.execute(httpRequest);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return forecast;
     }
 
     private boolean ShouldWearACoat(JSONObject weatherForecast) {
@@ -230,4 +226,25 @@ public class Home extends AppCompatActivity implements EventListener {
                     });
         }
     }
+
+    private void parseResponse(String response){
+
+        JSONObject forecast = null;
+        try {
+            forecast = new JSONObject(response);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        boolean coatWeather = ShouldWearACoat(forecast);
+
+        setCoatResult(coatWeather, locationProvided);
+    }
+
+    @Override
+    public void ForecastProcessingDone(String result) {
+
+        parseResponse(result);
+    }
 }
+

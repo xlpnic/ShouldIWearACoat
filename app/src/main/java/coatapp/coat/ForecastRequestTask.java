@@ -9,7 +9,14 @@ import java.net.URL;
 
 public class ForecastRequestTask extends AsyncTask<String, Void, String> {
 
+    private ForecastRequestProcessListener forecastRequestProcessListener;
+
+    public void setForecastProcesslistener(ForecastRequestProcessListener forecastProcessListener) {
+        this.forecastRequestProcessListener = forecastProcessListener;
+    }
+
     private static String getForecastRequest(String urlToRead) throws Exception {
+
         StringBuilder result = new StringBuilder();
         URL url = new URL(urlToRead);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -40,6 +47,6 @@ public class ForecastRequestTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String message) {
-        //process message
+        forecastRequestProcessListener.ForecastProcessingDone(message);
     }
 }
