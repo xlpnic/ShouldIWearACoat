@@ -9,6 +9,7 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -33,6 +34,9 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
         String linkText = "Powered by <a href='https://darksky.net/poweredby/'>Dark Sky</a>.";
         link.setText(Html.fromHtml(linkText));
         link.setMovementMethod(LinkMovementMethod.getInstance());
+
+        ProgressBar loadingSpinner = (ProgressBar) findViewById(R.id.loadingIndicator);
+        loadingSpinner.setVisibility(View.INVISIBLE);
     }
 
     public void setCostCheckButtonEnabled(boolean enabled){
@@ -41,6 +45,9 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
     }
 
     public void coatCheck(View view) {
+        ProgressBar loadingSpinner = (ProgressBar) findViewById(R.id.loadingIndicator);
+        loadingSpinner.setVisibility(View.VISIBLE);
+
         setCostCheckButtonEnabled(false);
 
         locationHandler.determineLocation();
@@ -69,6 +76,9 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
         }
 
         setResultTextVisible(true);
+
+        ProgressBar loadingSpinner = (ProgressBar) findViewById(R.id.loadingIndicator);
+        loadingSpinner.setVisibility(View.INVISIBLE);
     }
 
     private void getForecast(Location currentLocation) {
@@ -163,6 +173,7 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
     private void parseResponse(String response){
 
         JSONObject forecast = null;
+
         try {
             forecast = new JSONObject(response);
         } catch (JSONException e) {
