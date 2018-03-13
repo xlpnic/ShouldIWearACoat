@@ -5,6 +5,8 @@ import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,7 +16,6 @@ import org.json.JSONObject;
 
 public class Home extends AppCompatActivity implements ForecastRequestProcessListener, LocationRequestProcessListener {
 
-    private Location locationProvided;
     private LocationHandler locationHandler;
 
     @Override
@@ -27,6 +28,11 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
 
         this.locationHandler = new LocationHandler(this);
         locationHandler.setLocationRequestProcessListener(this);
+
+        TextView link = (TextView) findViewById(R.id.textLocation);
+        String linkText = "Powered by <a href='https://darksky.net/poweredby/'>Dark Sky</a>.";
+        link.setText(Html.fromHtml(linkText));
+        link.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     public void setCostCheckButtonEnabled(boolean enabled){
@@ -51,7 +57,7 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
         }
     }
 
-    private void setCoatResult(boolean wearCoat, Location currentLocation) {
+    private void setCoatResult(boolean wearCoat) {
 
         if(wearCoat){
             TextView textResult = (TextView) findViewById(R.id.textResult);
@@ -63,19 +69,14 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
         }
 
         setResultTextVisible(true);
-
-        TextView textLocation = (TextView) findViewById(R.id.textLocation);
-        String locationText = currentLocation.getLatitude() + ", " + currentLocation.getLongitude();
-        textLocation.setText(locationText);
-        textLocation.setVisibility(View.VISIBLE);
     }
 
-    private void getForecast() {
+    private void getForecast(Location currentLocation) {
 
         String secretKey = getForecastSecretKey();
         String requestEndpoint = "https://api.darksky.net/forecast/";
         String requestExclusions = "exclude=minutely,daily,alerts,flags";
-        String httpRequest = requestEndpoint + secretKey + "/" + locationProvided.getLatitude() + "," + locationProvided.getLongitude() + "?" + requestExclusions;
+        String httpRequest = requestEndpoint + secretKey + "/" + currentLocation.getLatitude() + "," + currentLocation.getLongitude() + "?" + requestExclusions;
 
         try {
 
@@ -170,19 +171,17 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
 
         boolean coatWeather = ShouldWearACoat(forecast);
 
-        setCoatResult(coatWeather, locationProvided);
+        setCoatResult(coatWeather);
     }
 
     @Override
     public void ForecastProcessingDone(String result) {
-
         parseResponse(result);
     }
 
     @Override
     public void LocationProcessingDone(Location currentLocation) {
-        locationProvided = currentLocation;
-        getForecast();
+        getForecast(currentLocation);
     }
 
     @Override
