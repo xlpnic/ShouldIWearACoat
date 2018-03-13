@@ -91,4 +91,15 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/coatCheckButton" />
 
+    <TextView
+        android:id="@+id/loadingPhrase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/schemeLightGrey"
+        app:layout_constraintBottom_toTopOf="@+id/textResult"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loadingIndicator" />
+
 </android.support.constraint.ConstraintLayout>

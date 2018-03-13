@@ -15,9 +15,24 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Random;
+
 public class Home extends AppCompatActivity implements ForecastRequestProcessListener, LocationRequestProcessListener {
 
     private LocationHandler locationHandler;
+    private String[] loadingPhrases = {
+            "Analysis cloud fluffiness...",
+            "Checking cloud density...",
+            "Conversing with weather gods...",
+            "Analysing coat likelihood statistics...",
+            "Determining likelihood of acid rain...",
+            "Googling synonyms for 'rain'...",
+            "Asking Jeeves what he reckons...",
+            "Sticking finger in the air...",
+            "Testing current puddle depth...",
+            "Testing apparent puddle temperature...",
+            "Checking green-screen weather map...",
+            "Turning on the Weather Channel..."};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +52,9 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
 
         ProgressBar loadingSpinner = (ProgressBar) findViewById(R.id.loadingIndicator);
         loadingSpinner.setVisibility(View.INVISIBLE);
+
+        TextView loadingPhrase = (TextView) findViewById(R.id.loadingPhrase);
+        loadingPhrase.setVisibility(View.INVISIBLE);
     }
 
     public void setCostCheckButtonEnabled(boolean enabled){
@@ -44,9 +62,20 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
         coatCheckButton.setEnabled(enabled);
     }
 
+    public String getRandomLoadingPhrase() {
+        int randomIndex = new Random().nextInt(loadingPhrases.length);
+        return loadingPhrases[randomIndex];
+    }
+
     public void coatCheck(View view) {
         ProgressBar loadingSpinner = (ProgressBar) findViewById(R.id.loadingIndicator);
         loadingSpinner.setVisibility(View.VISIBLE);
+
+        TextView loadingPhrase = (TextView) findViewById(R.id.loadingPhrase);
+        loadingPhrase.setVisibility(View.VISIBLE);
+        String loadingPhraseToSet = getRandomLoadingPhrase();
+        loadingPhraseToSet += " Please wait.";
+        loadingPhrase.setText(loadingPhraseToSet);
 
         setCostCheckButtonEnabled(false);
 
@@ -79,6 +108,9 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
 
         ProgressBar loadingSpinner = (ProgressBar) findViewById(R.id.loadingIndicator);
         loadingSpinner.setVisibility(View.INVISIBLE);
+
+        TextView loadingPhrase = (TextView) findViewById(R.id.loadingPhrase);
+        loadingPhrase.setVisibility(View.INVISIBLE);
     }
 
     private void getForecast(Location currentLocation) {
