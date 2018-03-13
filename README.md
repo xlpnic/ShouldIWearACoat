@@ -3,6 +3,11 @@ Coat?
 
 An Android app that gets the weather forecast for the near future and tells you if you should wear a coat or not.
 
+Location
+----------------
+
+The user's location is provided by [Android OS Location Services](https://developer.android.com/guide/topics/location/index.html).
+
 Weather Forecast
 ----------------
 
