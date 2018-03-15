@@ -45,10 +45,15 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
         this.locationHandler = new LocationHandler(this);
         locationHandler.setLocationRequestProcessListener(this);
 
-        TextView link = (TextView) findViewById(R.id.textLocation);
-        String linkText = "Powered by <a href='https://darksky.net/poweredby/'>Dark Sky</a>.";
-        link.setText(Html.fromHtml(linkText));
-        link.setMovementMethod(LinkMovementMethod.getInstance());
+        TextView darkSkyCredit = (TextView) findViewById(R.id.darkSkyCreditText);
+        String darkSkyLinkText = "Powered by <a href='https://darksky.net/poweredby/'>Dark Sky</a>.";
+        darkSkyCredit.setText(Html.fromHtml(darkSkyLinkText));
+        darkSkyCredit.setMovementMethod(LinkMovementMethod.getInstance());
+
+        TextView iconCredit = (TextView) findViewById(R.id.iconCreditText);
+        String iconLinkText = "Icon made by <a href='https://www.freepik.com/'>Freepik</a> from <a href='https://www.flaticon.com/'>Flaticon</a>.";
+        iconCredit.setText(Html.fromHtml(iconLinkText));
+        iconCredit.setMovementMethod(LinkMovementMethod.getInstance());
 
         ProgressBar loadingSpinner = (ProgressBar) findViewById(R.id.loadingIndicator);
         loadingSpinner.setVisibility(View.INVISIBLE);
