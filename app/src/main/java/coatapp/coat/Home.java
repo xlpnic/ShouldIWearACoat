@@ -44,6 +44,7 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
             "One more check...",
             "OK, that's enough."
     };
+    protected double coldestNonCoatTemperatureFahrenheit = 60.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,10 +212,8 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
     }
 
     private boolean IsPrettyCold(double temperature){
-        double coldestNonCoatTemperature = 60.0;
 
-        return temperature < coldestNonCoatTemperature;
-
+        return temperature < coldestNonCoatTemperatureFahrenheit;
     }
 
     private boolean IsCoatWeatherType(WeatherConverter.WeatherType weatherType){
