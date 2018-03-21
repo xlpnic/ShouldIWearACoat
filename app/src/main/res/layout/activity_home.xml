@@ -28,6 +28,7 @@
         android:id="@+id/textResult"
         android:layout_width="wrap_content"
         android:layout_height="79dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/rounded_corners_inverted"
         android:ems="10"
         android:gravity="center"
@@ -37,19 +38,18 @@
         android:textColor="@color/schemeLightGrey"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/darkSkyCreditText"
+        app:layout_constraintBottom_toTopOf="@+id/privacyPolicyText"
         app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/coatCheckButton"
-        app:layout_constraintVertical_bias="0.608" />
+        app:layout_constraintVertical_bias="0.74" />
 
     <TextView
         android:id="@+id/darkSkyCreditText"
         android:layout_width="365dp"
         android:layout_height="10dp"
-        android:layout_marginBottom="1dp"
-        android:layout_marginTop="161dp"
+        android:layout_marginBottom="12dp"
         android:ems="10"
         android:gravity="bottom"
         android:inputType="none"
@@ -61,8 +61,24 @@
         app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/coatCheckButton"
-        app:layout_constraintVertical_bias="0.858"
+        tools:ignore="SmallSp" />
+
+    <TextView
+        android:id="@+id/privacyPolicyText"
+        android:layout_width="365dp"
+        android:layout_height="10dp"
+        android:layout_marginBottom="23dp"
+        android:ems="10"
+        android:gravity="bottom"
+        android:inputType="none"
+        android:text="Privacy Policy Text"
+        android:textAlignment="center"
+        android:textColor="@color/schemeDarkTurquoise"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iconCreditText"
+        app:layout_constraintHorizontal_bias="0.526"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         tools:ignore="SmallSp" />
 
     <TextView
@@ -70,7 +86,6 @@
         android:layout_width="365dp"
         android:layout_height="10dp"
         android:layout_marginBottom="1dp"
-        android:layout_marginTop="1dp"
         android:ems="10"
         android:gravity="bottom"
         android:inputType="none"
@@ -82,8 +97,6 @@
         app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/darkSkyCreditText"
-        app:layout_constraintVertical_bias="1.0"
         tools:ignore="SmallSp" />
 
     <TextView

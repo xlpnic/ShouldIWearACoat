@@ -55,6 +55,11 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
         iconCredit.setText(Html.fromHtml(iconLinkText));
         iconCredit.setMovementMethod(LinkMovementMethod.getInstance());
 
+        TextView privacyPolicy = (TextView) findViewById(R.id.privacyPolicyText);
+        String privacyPolicyText = "<a href='https://xlpnic.github.io/ShouldIWearACoat/PrivacyPolicy.html'>Privacy Policy</a>.";
+        privacyPolicy.setText(Html.fromHtml(privacyPolicyText));
+        privacyPolicy.setMovementMethod(LinkMovementMethod.getInstance());
+
         ProgressBar loadingSpinner = (ProgressBar) findViewById(R.id.loadingIndicator);
         loadingSpinner.setVisibility(View.INVISIBLE);
 
