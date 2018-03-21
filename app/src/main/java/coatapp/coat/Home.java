@@ -20,6 +20,7 @@ import java.util.Random;
 public class Home extends AppCompatActivity implements ForecastRequestProcessListener, LocationRequestProcessListener {
 
     private LocationHandler locationHandler;
+    protected int numHoursInFutureToCheck = 2;
     private String[] loadingPhrases = {
             "Analysis cloud fluffiness...",
             "Checking cloud density...",
@@ -152,8 +153,6 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
         if (currentlyCoatWeather){
             return true;
         }
-
-        int numHoursInFutureToCheck = 5;
 
         HourWeather[] hourlyWeatherBreakdown = JsonHelper.GetWeatherByHour(weatherForecast, numHoursInFutureToCheck);
 
