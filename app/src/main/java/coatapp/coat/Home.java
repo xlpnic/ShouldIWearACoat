@@ -34,6 +34,16 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
             "Testing apparent puddle temperature...",
             "Checking green-screen weather map...",
             "Turning on the Weather Channel..."};
+    protected int maxNumberOfRequestsToAllow = 5;
+    private int numberOfRequestsExecuted = 0;
+    private String[] buttonPhrases = {
+            "Well?",
+            "What about now?",
+            "Need coat update!",
+            "A Coat... Should I wear one?",
+            "One more check...",
+            "OK, that's enough."
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +55,9 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
 
         this.locationHandler = new LocationHandler(this);
         locationHandler.setLocationRequestProcessListener(this);
+
+        Button requestButton = (Button) findViewById(R.id.coatCheckButton);
+        requestButton.setText(buttonPhrases[0]);
 
         TextView darkSkyCredit = (TextView) findViewById(R.id.darkSkyCreditText);
         String darkSkyLinkText = "Powered by <a href='https://darksky.net/poweredby/'>Dark Sky</a>.";
@@ -79,6 +92,9 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
     }
 
     public void coatCheck(View view) {
+        setCostCheckButtonEnabled(false);
+        setResultTextVisible(false);
+
         ProgressBar loadingSpinner = (ProgressBar) findViewById(R.id.loadingIndicator);
         loadingSpinner.setVisibility(View.VISIBLE);
 
@@ -87,8 +103,6 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
         String loadingPhraseToSet = getRandomLoadingPhrase();
         loadingPhraseToSet += " Please wait.";
         loadingPhrase.setText(loadingPhraseToSet);
-
-        setCostCheckButtonEnabled(false);
 
         locationHandler.determineLocation();
     }
@@ -122,6 +136,28 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
 
         TextView loadingPhrase = (TextView) findViewById(R.id.loadingPhrase);
         loadingPhrase.setVisibility(View.INVISIBLE);
+
+        changeButtonText();
+
+        if(numberOfRequestsExecuted >= maxNumberOfRequestsToAllow){
+            setCostCheckButtonEnabled(false);
+        }
+        else{
+            setCostCheckButtonEnabled(true);
+        }
+
+    }
+
+    private void changeButtonText(){
+
+        numberOfRequestsExecuted++;
+
+        if(numberOfRequestsExecuted > maxNumberOfRequestsToAllow){
+            numberOfRequestsExecuted = maxNumberOfRequestsToAllow;
+        }
+
+        Button requestButton = (Button) findViewById(R.id.coatCheckButton);
+        requestButton.setText(buttonPhrases[numberOfRequestsExecuted]);
     }
 
     private void getForecast(Location currentLocation) {
