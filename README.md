@@ -28,6 +28,6 @@ The app will advise the user to wear a coat if the current weather, or the weath
   * tornado
   * wind
   
-* The temperature is below 60 degrees Farenheit
+* The temperature is below 60 degrees Fahrenheit (~15 degrees Celsius)
 
 The app will also advise to wear a coat if the forecast summary is unrecognised - better safe than sorry!
