@@ -124,10 +124,12 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
         if(wearCoat){
             TextView textResult = (TextView) findViewById(R.id.textResult);
             textResult.setText(R.string.affirmativeResult);
+            textResult.setTextSize(64);
         }
         else{
             TextView textResult = (TextView) findViewById(R.id.textResult);
             textResult.setText(R.string.negativeResult);
+            textResult.setTextSize(36);
         }
 
         setResultTextVisible(true);
@@ -180,7 +182,7 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
         }
     }
 
-    private boolean ShouldWearACoat(JSONObject weatherForecast) {
+    public boolean ShouldWearACoat(JSONObject weatherForecast) {
 
         WeatherConverter.WeatherType currentWeatherType = JsonHelper.GetCurrentWeatherType(weatherForecast);
         double currentTemperature = JsonHelper.GetCurrentTemperature(weatherForecast);
