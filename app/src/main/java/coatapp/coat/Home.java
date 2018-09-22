@@ -57,33 +57,33 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
         this.locationHandler = new LocationHandler(this);
         locationHandler.setLocationRequestProcessListener(this);
 
-        Button requestButton = (Button) findViewById(R.id.coatCheckButton);
+        Button requestButton = findViewById(R.id.coatCheckButton);
         requestButton.setText(buttonPhrases[0]);
 
-        TextView darkSkyCredit = (TextView) findViewById(R.id.darkSkyCreditText);
+        TextView darkSkyCredit = findViewById(R.id.darkSkyCreditText);
         String darkSkyLinkText = "Powered by <a href='https://darksky.net/poweredby/'>Dark Sky</a>.";
         darkSkyCredit.setText(Html.fromHtml(darkSkyLinkText));
         darkSkyCredit.setMovementMethod(LinkMovementMethod.getInstance());
 
-        TextView iconCredit = (TextView) findViewById(R.id.iconCreditText);
+        TextView iconCredit = findViewById(R.id.iconCreditText);
         String iconLinkText = "Icon made by <a href='https://www.freepik.com/'>Freepik</a> from <a href='https://www.flaticon.com/'>Flaticon</a>.";
         iconCredit.setText(Html.fromHtml(iconLinkText));
         iconCredit.setMovementMethod(LinkMovementMethod.getInstance());
 
-        TextView privacyPolicy = (TextView) findViewById(R.id.privacyPolicyText);
+        TextView privacyPolicy = findViewById(R.id.privacyPolicyText);
         String privacyPolicyText = "<a href='https://xlpnic.github.io/ShouldIWearACoat/PrivacyPolicy.html'>Privacy Policy</a>.";
         privacyPolicy.setText(Html.fromHtml(privacyPolicyText));
         privacyPolicy.setMovementMethod(LinkMovementMethod.getInstance());
 
-        ProgressBar loadingSpinner = (ProgressBar) findViewById(R.id.loadingIndicator);
+        ProgressBar loadingSpinner = findViewById(R.id.loadingIndicator);
         loadingSpinner.setVisibility(View.INVISIBLE);
 
-        TextView loadingPhrase = (TextView) findViewById(R.id.loadingPhrase);
+        TextView loadingPhrase = findViewById(R.id.loadingPhrase);
         loadingPhrase.setVisibility(View.INVISIBLE);
     }
 
     public void setCostCheckButtonEnabled(boolean enabled){
-        Button coatCheckButton = (Button) findViewById(R.id.coatCheckButton);
+        Button coatCheckButton = findViewById(R.id.coatCheckButton);
         coatCheckButton.setEnabled(enabled);
     }
 
@@ -96,10 +96,10 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
         setCostCheckButtonEnabled(false);
         setResultTextVisible(false);
 
-        ProgressBar loadingSpinner = (ProgressBar) findViewById(R.id.loadingIndicator);
+        ProgressBar loadingSpinner = findViewById(R.id.loadingIndicator);
         loadingSpinner.setVisibility(View.VISIBLE);
 
-        TextView loadingPhrase = (TextView) findViewById(R.id.loadingPhrase);
+        TextView loadingPhrase = findViewById(R.id.loadingPhrase);
         loadingPhrase.setVisibility(View.VISIBLE);
         String loadingPhraseToSet = getRandomLoadingPhrase();
         loadingPhraseToSet += " Please wait.";
@@ -109,7 +109,7 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
     }
 
     public void setResultTextVisible(boolean visible){
-        TextView textResult = (TextView) findViewById(R.id.textResult);
+        TextView textResult = findViewById(R.id.textResult);
 
         if(visible){
             textResult.setVisibility(View.VISIBLE);
@@ -122,22 +122,22 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
     private void setCoatResult(boolean wearCoat) {
 
         if(wearCoat){
-            TextView textResult = (TextView) findViewById(R.id.textResult);
+            TextView textResult = findViewById(R.id.textResult);
             textResult.setText(R.string.affirmativeResult);
             textResult.setTextSize(64);
         }
         else{
-            TextView textResult = (TextView) findViewById(R.id.textResult);
+            TextView textResult = findViewById(R.id.textResult);
             textResult.setText(R.string.negativeResult);
             textResult.setTextSize(36);
         }
 
         setResultTextVisible(true);
 
-        ProgressBar loadingSpinner = (ProgressBar) findViewById(R.id.loadingIndicator);
+        ProgressBar loadingSpinner = findViewById(R.id.loadingIndicator);
         loadingSpinner.setVisibility(View.INVISIBLE);
 
-        TextView loadingPhrase = (TextView) findViewById(R.id.loadingPhrase);
+        TextView loadingPhrase = findViewById(R.id.loadingPhrase);
         loadingPhrase.setVisibility(View.INVISIBLE);
 
         changeButtonText();
@@ -159,7 +159,7 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
             numberOfRequestsExecuted = maxNumberOfRequestsToAllow;
         }
 
-        Button requestButton = (Button) findViewById(R.id.coatCheckButton);
+        Button requestButton = findViewById(R.id.coatCheckButton);
         requestButton.setText(buttonPhrases[numberOfRequestsExecuted]);
     }
 
@@ -173,7 +173,7 @@ public class Home extends AppCompatActivity implements ForecastRequestProcessLis
         try {
 
             ForecastRequestTask forecastRequestTask = new ForecastRequestTask();
-            forecastRequestTask.setForecastProcesslistener(this);
+            forecastRequestTask.setForecastProcessListener(this);
 
             forecastRequestTask.execute(httpRequest);
 

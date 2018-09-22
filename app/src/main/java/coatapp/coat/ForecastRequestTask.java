@@ -11,7 +11,7 @@ public class ForecastRequestTask extends AsyncTask<String, Void, String> {
 
     private ForecastRequestProcessListener forecastRequestProcessListener;
 
-    public void setForecastProcesslistener(ForecastRequestProcessListener forecastProcessListener) {
+    public void setForecastProcessListener(ForecastRequestProcessListener forecastProcessListener) {
         this.forecastRequestProcessListener = forecastProcessListener;
     }
 
