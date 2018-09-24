@@ -6,7 +6,7 @@ An Android app that gets the weather forecast for the near future and tells you 
 Location
 ----------------
 
-The user's location is provided by [Android OS Location Services](https://developer.android.com/guide/topics/location/index.html).
+The user's location is provided by [Android OS Location Services](https://developer.android.com/training/location/).
 
 Weather Forecast
 ----------------
