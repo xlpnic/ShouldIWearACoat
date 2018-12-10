@@ -3,6 +3,10 @@ Coat?
 
 An Android app that gets the weather forecast for the near future and tells you if you should wear a coat or not.
 
+Download
+----------------
+Download the app (for free) from the Google Play Store: https://play.google.com/store/apps/details?id=coatapp.coat
+
 Location
 ----------------
 
