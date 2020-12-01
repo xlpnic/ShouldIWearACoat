@@ -11,7 +11,7 @@
 # Generated files
 bin/
 gen/
-out/
+  m,kiui-=out/
 
 # Gradle files
 .gradle/
@@ -56,6 +56,10 @@ freeline_project_description.json
 *.nic.xml
 .idea/workspace.xml___jb_tmp___
 .idea/caches/build_file_checksums.ser
+.idea/caches/build_file_checksums.ser
+.idea/codeStyles/Project.xml
+.idea/misc.xml
+.idea/modules.xml
 .idea/caches/build_file_checksums.ser
 .idea/codeStyles/Project.xml
 .idea/misc.xml
