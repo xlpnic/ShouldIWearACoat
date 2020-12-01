@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+// Apparently AsyncTask has been deprecated.
+// Need to figure out what the alternative is and switch to that at some point.
 public class ForecastRequestTask extends AsyncTask<String, Void, String> {
 
     private ForecastRequestProcessListener forecastRequestProcessListener;
